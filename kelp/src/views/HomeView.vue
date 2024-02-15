@@ -1,6 +1,7 @@
 <script setup>
+import { compileScript } from "vue/compiler-sfc";
 import Card from "../components/Card.vue";
-import { ref } from "vue";
+import { ref, setBlockTracking } from "vue";
 
 function createCards() {
   const cards = ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king"];
@@ -27,8 +28,11 @@ function createCards() {
 let deck = createCards();
 realvalueinator(deck);
 
-const playerhand = ref([]);
-const winner = ref([]);
+const ph = ref([]);
+const w = ref([]);
+
+const playerhand = ph.value;
+const winner = w.value;
 
 function wait(ms) {
   return new Promise((joever) => {
@@ -39,7 +43,7 @@ function wait(ms) {
 }
 
 function realvalueinator(dude) {
-  Array.from(dude).forEach((s) => {
+  dude.forEach((s) => {
     switch (s.value) {
       case "king":
         s.realvalue = 10;
@@ -60,6 +64,7 @@ function realvalueinator(dude) {
 }
 
 function addvalues(hand) {
+  console.log(hand);
   const values = Array.from(hand).reduce(
     (accumulator, currentValue) => accumulator + currentValue.realvalue,
     0
@@ -70,9 +75,7 @@ function addvalues(hand) {
 let dealervalue = 0;
 let playervalue = 0;
 
-async function deak(h, val) {
-  const hand = h.value;
-  console.log(h);
+async function deak(hand, val) {
   console.log(hand);
   hand.push(deck[deck.length - 1]);
   deck.pop();
@@ -99,8 +102,7 @@ function checkwinfail(handvalue) {
   }
 }
 
-function riggedcheck(h) {
-  const hand = Array.from(h.value);
+function riggedcheck(hand) {
   console.log("howdy");
   const handvalue = addvalues(hand);
   if (handvalue === 21) {
@@ -111,8 +113,12 @@ function riggedcheck(h) {
     hand[1].realvalue = 0;
     let cheatnum = 21 - addvalues(hand);
     const possiblecheats = deck.filter((card) => card.realvalue === cheatnum);
-    hand[1] = possiblecheats[0];
-    console.log("rigged" + hand.map((card) => card.realvalue));
+    if (possiblecheats.length > 0) {
+      hand[1] = possiblecheats[0];
+    } else {
+      realvalueinator(hand);
+      console.log("winner lose haha");
+    }
     console.log(addvalues(hand));
   } else {
     console.log("neither");
@@ -120,10 +126,14 @@ function riggedcheck(h) {
   }
 }
 
-function startgame() {
+async function startgame(event) {
+  event.target.style.display = "none";
   deak(playerhand, playervalue);
+  await wait(700);
   deak(winner, dealervalue);
+  await wait(700);
   deak(playerhand, playervalue);
+  await wait(700);
   deak(winner, dealervalue);
   realvalueinator(playerhand);
   realvalueinator(winner);
@@ -132,10 +142,8 @@ function startgame() {
   dealervalue = addvalues(winner);
   console.log(playervalue, dealervalue);
   checkwinfail(playervalue);
-  deal();
+  document.querySelector("#dealbutton").style.display = "block";
 }
-
-startgame(deck);
 
 function deal() {
   deak(playerhand, playervalue);
@@ -147,6 +155,21 @@ function deal() {
 
 <template>
   <main>
-    <Card :card="cardObject" v-for="cardObject in playerhand" />
+    <div class="hand">
+      <Card :card="cardObject" who="dealer" v-for="cardObject in w" />
+    </div>
+    <div class="hand">
+      <Card :card="cardObject" who="player" v-for="cardObject in ph" />
+    </div>
   </main>
+  <button @click="startgame">Start Game!</button>
+  <button @click="deal" style="display: none" id="dealbutton">deal!</button>
 </template>
+
+<style>
+.hand {
+  display: flex;
+  gap: 10px;
+  margin: 10px;
+}
+</style>
