@@ -1,12 +1,12 @@
 <script setup>
-import { compileScript } from "vue/compiler-sfc";
 import Card from "../components/Card.vue";
+import Value from "../components/HandV.vue";
 import { ref, setBlockTracking } from "vue";
 
 function createCards() {
   const cards = ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king"];
   const r = [];
-  const suits = ["heart", "spade", "club", "diamond"];
+  const suits = ["hearts", "spades", "clubs", "diamonds"];
 
   for (let j = 0; j < 4; j++) {
     for (let i = 0; i < cards.length; i++) {
@@ -98,7 +98,7 @@ function checkwinfail(handvalue) {
   } else if (handvalue > 21) {
     console.log("lose");
   } else {
-    console.log("neither");
+    console.log("keep play");
   }
 }
 
@@ -135,8 +135,6 @@ async function startgame(event) {
   deak(playerhand, playervalue);
   await wait(700);
   deak(winner, dealervalue);
-  realvalueinator(playerhand);
-  realvalueinator(winner);
   console.log(playerhand, winner);
   playervalue = addvalues(playerhand);
   dealervalue = addvalues(winner);
@@ -150,19 +148,38 @@ function deal() {
   checkwinfail(playervalue);
   deak(winner, dealervalue);
   riggedcheck(winner);
+  playervalue = addvalues(playerhand);
+  dealervalue = addvalues(winner);
 }
+
+function reset(){
+document.querySelector("#startbutton").style.display = "block";
+document.querySelector("#dealbutton").style.display = "none";
+let dealervalue = 0;
+let playervalue = 0;
+let w = null;
+let ph = null;
+let deck = createCards();
+realvalueinator(deck);
+} // reset shenanigans isdkdal;ksjdlkasjd
+
 </script>
 
 <template>
   <main>
     <div class="hand">
-      <Card :card="cardObject" who="dealer" v-for="cardObject in w" />
+      <h2>Dealer</h2>
+      <Card :card="cardObject" who="dealer" v-for="cardObject in w"  />
+      <Value :val = "dealervalue"/>
     </div>
     <div class="hand">
-      <Card :card="cardObject" who="player" v-for="cardObject in ph" />
+      <h2>Playerhand</h2>
+      <Card :card="cardObject" v-for="cardObject in ph" />
+      <Value :val = "playervalue"/>
     </div>
+
   </main>
-  <button @click="startgame">Start Game!</button>
+  <button @click="startgame" id="startbutton">Start Game!</button>
   <button @click="deal" style="display: none" id="dealbutton">deal!</button>
 </template>
 

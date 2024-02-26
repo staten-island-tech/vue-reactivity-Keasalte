@@ -1,6 +1,5 @@
 <template>
   <div class="card">
-    <h2>{{ props.who }}</h2>
     <p>this is {{ props.card.suit }}</p>
     <p>its value is {{ props.card.value }}</p>
     <p>real value is {{ props.card.realvalue }}</p>
@@ -10,6 +9,7 @@
 <script setup>
 const props = defineProps(["card", "who"]);
 console.log(props.card);
+
 </script>
 
 <style scoped>
