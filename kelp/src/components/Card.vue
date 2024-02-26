@@ -17,5 +17,6 @@ console.log(props.card);
   background-color: rgb(240, 193, 193);
 }
 .card {
+  border: 2px solid black;
 }
 </style>
