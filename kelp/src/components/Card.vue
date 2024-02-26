@@ -1,22 +1,19 @@
 <template>
   <div class="card">
-    <p>this is {{ props.card.suit }}</p>
-    <p>its value is {{ props.card.value }}</p>
-    <p>real value is {{ props.card.realvalue }}</p>
+    <img :src="`${props.card.value}_of_${props.card.suit}.png`" />
   </div>
 </template>
 
 <script setup>
 const props = defineProps(["card", "who"]);
 console.log(props.card);
-
 </script>
 
 <style scoped>
-* {
-  background-color: rgb(240, 193, 193);
-}
-.card {
-  border: 2px solid black;
+img {
+  min-height: 350px;
+  max-height: 350px;
+  min-width: 250px;
+  max-width: 250px;
 }
 </style>

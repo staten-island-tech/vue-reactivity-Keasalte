@@ -64,7 +64,6 @@ function realvalueinator(dude) {
 }
 
 function addvalues(hand) {
-  console.log(hand);
   const values = Array.from(hand).reduce(
     (accumulator, currentValue) => accumulator + currentValue.realvalue,
     0
@@ -89,57 +88,47 @@ async function deak(hand, val) {
       }
     });
   }
-  await wait(700);
+  playervalue = addvalues(playerhand);
+  dealervalue = addvalues(winner);
 }
 
 function checkwinfail(handvalue) {
   if (handvalue === 21) {
-    console.log("win");
+    beattheodds();
   } else if (handvalue > 21) {
-    console.log("lose");
+    bust();
   } else {
     console.log("keep play");
   }
 }
 
 function riggedcheck(hand) {
-  console.log("howdy");
   const handvalue = addvalues(hand);
   if (handvalue === 21) {
-    console.log("win");
+    winnerwin();
   } else if (handvalue > 21) {
     console.log("rigging time!");
-    realvalueinator(hand);
     hand[1].realvalue = 0;
     let cheatnum = 21 - addvalues(hand);
+    console.log(cheatnum);
     const possiblecheats = deck.filter((card) => card.realvalue === cheatnum);
     if (possiblecheats.length > 0) {
       hand[1] = possiblecheats[0];
     } else {
-      realvalueinator(hand);
-      console.log("winner lose haha");
+      beattheodds();
     }
-    console.log(addvalues(hand));
+    winnerwin();
   } else {
     console.log("neither");
-    console.log(hand);
   }
 }
 
 async function startgame(event) {
   event.target.style.display = "none";
   deak(playerhand, playervalue);
-  await wait(700);
   deak(winner, dealervalue);
-  await wait(700);
   deak(playerhand, playervalue);
-  await wait(700);
   deak(winner, dealervalue);
-  console.log(playerhand, winner);
-  playervalue = addvalues(playerhand);
-  dealervalue = addvalues(winner);
-  console.log(playervalue, dealervalue);
-  checkwinfail(playervalue);
   document.querySelector("#dealbutton").style.display = "block";
 }
 
@@ -148,36 +137,92 @@ function deal() {
   checkwinfail(playervalue);
   deak(winner, dealervalue);
   riggedcheck(winner);
-  playervalue = addvalues(playerhand);
-  dealervalue = addvalues(winner);
 }
 
-function reset(){
-document.querySelector("#startbutton").style.display = "block";
-document.querySelector("#dealbutton").style.display = "none";
-let dealervalue = 0;
-let playervalue = 0;
-let w = null;
-let ph = null;
-let deck = createCards();
-realvalueinator(deck);
-} // reset shenanigans isdkdal;ksjdlkasjd
+function beattheodds() {
+  document.querySelector("body").insertAdjacentHTML(
+    "beforeend",
+    `<dialog class="cc">
+      <h2 class = "text">You Win!</h2>
+      <button alt = "click escape to return" id="close" class="button-1" autofocus> click to return </button>
+     </dialog>`
+  );
+  document.querySelector("dialog").showModal();
+  document.querySelector("dialog").addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+    }
+  });
+  document.getElementById("close").addEventListener("click", function () {
+    reset();
+    this.parentElement.remove();
+  });
+}
 
+function winnerwin() {
+  document.querySelector("body").insertAdjacentHTML(
+    "beforeend",
+    `<dialog class="cc">
+      <h2 class = "text">You Suck!</h2>
+      <button alt = "click escape to return" id="close" class="button-1" autofocus> click to return </button>
+     </dialog>`
+  );
+  document.querySelector("dialog").showModal();
+  document.querySelector("dialog").addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+    }
+  });
+  document.getElementById("close").addEventListener("click", function () {
+    reset();
+    this.parentElement.remove();
+  });
+}
+
+function bust() {
+  document.querySelector("body").insertAdjacentHTML(
+    "beforeend",
+    `<dialog class="cc">
+      <h2 class = "text">Busted!</h2>
+      <button alt = "click escape to return" id="close" class="button-1" autofocus> click to return </button>
+     </dialog>`
+  );
+  document.querySelector("dialog").showModal();
+  document.querySelector("dialog").addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+    }
+  });
+  document.getElementById("close").addEventListener("click", function () {
+    reset();
+    this.parentElement.remove();
+  });
+}
+
+function reset() {
+  w.value.splice(0, w.value.length);
+  ph.value.splice(0, ph.value.length);
+  dealervalue = 0;
+  playervalue = 0;
+  document.querySelector("#startbutton").style.display = "block";
+  document.querySelector("#dealbutton").style.display = "none";
+  let deck = createCards();
+  realvalueinator(deck);
+}
 </script>
 
 <template>
   <main>
     <div class="hand">
       <h2>Dealer</h2>
-      <Card :card="cardObject" who="dealer" v-for="cardObject in w"  />
-      <Value :val = "dealervalue"/>
+      <Card :card="cardObject" who="dealer" v-for="cardObject in w" />
+      <Value :val="dealervalue" />
     </div>
     <div class="hand">
       <h2>Playerhand</h2>
       <Card :card="cardObject" v-for="cardObject in ph" />
-      <Value :val = "playervalue"/>
+      <Value :val="playervalue" />
     </div>
-
   </main>
   <button @click="startgame" id="startbutton">Start Game!</button>
   <button @click="deal" style="display: none" id="dealbutton">deal!</button>
