@@ -97,11 +97,9 @@ function checkwinfail(handvalue) {
     beattheodds();
   } else if (handvalue > 21) {
     bust();
-  } 
-  else if (dealervalue > 21) {
+  } else if (dealervalue > 21) {
     beattheodds();
-  } 
-  else {
+  } else {
     console.log("keep play");
   }
 }
@@ -110,44 +108,41 @@ function riggedcheck(hand) {
   const handvalue = addvalues(hand);
   if (handvalue === 21) {
     winnerwin();
-    console.log("dealer hit 21")
+    console.log("dealer hit 21");
   } else if (handvalue > 21) {
     console.log("rigging time!");
-    let cheatnum2 = addvalues(hand) - hand[1].realvalue
-    console.log(cheatnum2)
+    let cheatnum2 = addvalues(hand) - hand[1].realvalue;
+    console.log(cheatnum2);
     let cheatnum = 21 - cheatnum2;
     console.log(addvalues(hand));
     console.log(cheatnum);
     const possiblecheats = deck.filter((card) => card.realvalue === cheatnum);
-    console.log(possiblecheats)
+    console.log(possiblecheats);
     if (possiblecheats.length > 0) {
       hand[1] = possiblecheats[0];
       dealervalue = 21;
-      console.log("possible cheats are real")
+      console.log("possible cheats are real");
       winnerwin();
-    }
-    else{
+    } else {
       checkwinfail();
-      console.log("how did this happen?")
+      console.log("how did this happen?");
     }
-  } 
-  else if(hand.length === 4){
+  } else if (hand.length === 4) {
     console.log("rigging time!");
-    let cheatnum2 = addvalues(hand) - hand[1].realvalue
-    console.log(cheatnum2)
+    let cheatnum2 = addvalues(hand) - hand[1].realvalue;
+    console.log(cheatnum2);
     let cheatnum = 21 - cheatnum2;
     console.log(addvalues(hand));
     console.log(cheatnum);
     const possiblecheats = deck.filter((card) => card.realvalue === cheatnum);
-    console.log(possiblecheats)
+    console.log(possiblecheats);
     if (possiblecheats.length > 0) {
       hand[1] = possiblecheats[0];
       dealervalue = 21;
-      console.log("possible cheats are real")
+      console.log("possible cheats are real");
       winnerwin();
     }
-  }
-  else {
+  } else {
     console.log("neither");
   }
 }
@@ -155,13 +150,17 @@ function riggedcheck(hand) {
 async function startgame(event) {
   event.target.style.display = "none";
   deak(playerhand, playervalue);
-  deak(winner, dealervalue);
-  deak(playerhand, playervalue);
+  await wait(700);
   deak(winner, dealervalue);
   await wait(700);
-  await checkwinfail();
+  deak(playerhand, playervalue);
+  await wait(700);
+  deak(winner, dealervalue);
+  console.log(winner, playerhand)
   document.querySelector("#dealbutton").style.display = "block";
   document.querySelector("#standbutton").style.display = "block";
+  checkwinfail();
+  riggedcheck();
 }
 
 async function deal() {
@@ -172,13 +171,13 @@ async function deal() {
   riggedcheck(winner);
 }
 
-function stand(){
+function stand() {
   deak(winner, dealervalue);
   riggedcheck(winner);
 }
 
 function beattheodds() {
-  console.log("how")
+  console.log("how");
   document.querySelector("body").insertAdjacentHTML(
     "beforeend",
     `<dialog class="cc">
@@ -195,14 +194,14 @@ function beattheodds() {
   document.getElementById("close").addEventListener("click", function () {
     document.querySelector("#resetbutton").style.display = "block";
     document.querySelector("#dealbutton").style.display = "none";
-  document.querySelector("#standbutton").style.display = "none";
+    document.querySelector("#standbutton").style.display = "none";
     this.parentElement.remove();
   });
   return;
 }
 
 function winnerwin() {
-  console.log("true winner")
+  console.log("true winner");
   document.querySelector("body").insertAdjacentHTML(
     "beforeend",
     `<dialog class="cc">
@@ -219,14 +218,14 @@ function winnerwin() {
   document.getElementById("close").addEventListener("click", function () {
     document.querySelector("#resetbutton").style.display = "block";
     document.querySelector("#dealbutton").style.display = "none";
-  document.querySelector("#standbutton").style.display = "none";
+    document.querySelector("#standbutton").style.display = "none";
     this.parentElement.remove();
   });
   return;
 }
 
 function bust() {
-  console.log("busted")
+  console.log("busted");
   document.querySelector("body").insertAdjacentHTML(
     "beforeend",
     `<dialog class="cc">
@@ -243,7 +242,7 @@ function bust() {
   document.getElementById("close").addEventListener("click", function () {
     document.querySelector("#resetbutton").style.display = "block";
     document.querySelector("#dealbutton").style.display = "none";
-  document.querySelector("#standbutton").style.display = "none";
+    document.querySelector("#standbutton").style.display = "none";
     this.parentElement.remove();
   });
   return;
@@ -259,13 +258,10 @@ function reset() {
   let deck = createCards();
   realvalueinator(deck);
 }
-
-
-
 </script>
-
 <template>
   <main>
+    <img :src="'moonshine.jpg'" alt="" class="decker" />
     <div class="hand">
       <h2>Dealer</h2>
       <Card :card="cardObject" who="dealer" v-for="cardObject in w" />
@@ -273,14 +269,23 @@ function reset() {
     </div>
     <div class="hand">
       <h2>Playerhand</h2>
+      <br>
       <Card :card="cardObject" v-for="cardObject in ph" />
       <Value :val="playervalue" />
     </div>
   </main>
-  <button @click="startgame" id="startbutton">Start Game!</button>
-  <button @click="deal" style="display: none" id="dealbutton">deal!</button>
-  <button @click="stand" style="display: none" id="standbutton">Stand.</button>
-  <button @click="reset" style="display: none" id="resetbutton">Reset Game.</button>
+  <button @click="startgame" id="startbutton" class="button">
+    Start Game!
+  </button>
+  <button @click="deal" style="display: none" id="dealbutton" class="button">
+    deal!
+  </button>
+  <button @click="stand" style="display: none" id="standbutton" class="button">
+    Stand.
+  </button>
+  <button @click="reset" style="display: none" id="resetbutton" class="button">
+    Reset Game.
+  </button>
 </template>
 
 <style>
@@ -290,12 +295,48 @@ function reset() {
   margin: 10px;
 }
 
-body{
-background-color: green;
+body {
+  background: radial-gradient(circle, rgb(8, 161, 39) 0%, rgb(4, 75, 20) 100%);
 }
-html{
+
+html {
   color: aliceblue;
-
+}
+img {
+  min-height: 350px;
+  max-height: 350px;
+  min-width: 250px;
+  max-width: 250px;
+  border-radius: 20px;
 }
 
+.button {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: 3px;
+  padding: 0 16px;
+  border-radius: 4px;
+  color: #fff;
+  background: #4902ac;
+  line-height: 1.15;
+  font-size: 14px;
+  height: 36px;
+  word-spacing: 0px;
+  letter-spacing: 0.0892857143em;
+  text-decoration: none;
+  text-transform: uppercase;
+  min-width: 64px;
+  border: none;
+  text-align: center;
+  box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
+    0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  :hover {
+    background: rgb(98, 0, 238);
+    box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
+      0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
+  }
+}
 </style>

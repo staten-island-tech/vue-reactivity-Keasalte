@@ -10,10 +10,5 @@ console.log(props.card);
 </script>
 
 <style scoped>
-img {
-  min-height: 350px;
-  max-height: 350px;
-  min-width: 250px;
-  max-width: 250px;
-}
+
 </style>
