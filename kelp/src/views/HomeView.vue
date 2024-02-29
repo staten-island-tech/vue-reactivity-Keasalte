@@ -2,7 +2,6 @@
 import Card from "../components/Card.vue";
 import Value from "../components/HandV.vue";
 import { ref, setBlockTracking } from "vue";
-import { storeToRefs } from "pinia";
 
 function createCards() {
   const cards = ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king"];
@@ -126,7 +125,7 @@ function riggedcheck(hand) {
       console.log("possible cheats are real");
       winnerwin();
     } else {
-      checkwinfail();
+      checkwinfail(playerhand);
       console.log("how did this happen?");
     }
   } else if (hand.length === 4) {
@@ -161,8 +160,8 @@ async function startgame(event) {
   console.log(winner, playerhand);
   document.querySelector("#dealbutton").style.display = "block";
   document.querySelector("#standbutton").style.display = "block";
-  checkwinfail();
-  riggedcheck();
+  checkwinfail(playervalue);
+  riggedcheck(winner);
 }
 
 async function deal() {
@@ -176,15 +175,17 @@ async function deal() {
 function stand() {
   deak(winner, dealervalue);
   riggedcheck(winner);
+  showcard = true;
 }
 
 function beattheodds() {
+  showcard = true;
   console.log("how");
   document.querySelector("body").insertAdjacentHTML(
     "beforeend",
     `<dialog class="cc">
       <h2 class>You Win!</h2>
-      <button alt = "click escape to return" id="close"autofocus> click to return </button>
+      <button alt = "click escape to return" id="close" autofocus> click to return </button>
      </dialog>`
   );
   document.querySelector("dialog").showModal();
@@ -203,6 +204,7 @@ function beattheodds() {
 }
 
 function winnerwin() {
+  showcard = true;
   console.log("true winner");
   document.querySelector("body").insertAdjacentHTML(
     "beforeend",
@@ -227,6 +229,7 @@ function winnerwin() {
 }
 
 function bust() {
+  showcard = true;
   console.log("busted");
   document.querySelector("body").insertAdjacentHTML(
     "beforeend",
@@ -259,35 +262,59 @@ function reset() {
   document.querySelector("#resetbutton").style.display = "none";
   let deck = createCards();
   realvalueinator(deck);
+  showcard = false;
 }
+
+let showcard = false;
 </script>
 <template>
   <main>
-    <img :src="'moonshine.jpg'" alt="" class="decker" />
-    <div class="hand">
-      <h2>Dealer</h2>
-      <Card :card="cardObject" who="dealer" v-for="cardObject in w" />
-      <Value :val="dealervalue" />
+    <div id="flexing">
+      <img :src="'moonshine.jpg'" alt="" class="decker" />
+      <div id="hands">
+        <div class="hand">
+          <h2>Dealer</h2>
+          <Card
+            :card="cardObject"
+            who="dealer"
+            v-for="(cardObject, index) in w"
+            :i="index"
+            :show="showcard"
+          />
+          <Value :val="dealervalue" />
+        </div>
+        <div class="hand">
+          <h2>Playerhand</h2>
+          <br />
+          <Card :card="cardObject" v-for="cardObject in ph" />
+          <Value :val="playervalue" />
+        </div>
+      </div>
     </div>
-    <div class="hand">
-      <h2>Playerhand</h2>
-      <br />
-      <Card :card="cardObject" v-for="cardObject in ph" />
-      <Value :val="playervalue" />
-    </div>
+
+    <button @click="startgame" id="startbutton" class="button">
+      Start Game!
+    </button>
+    <button @click="deal" style="display: none" id="dealbutton" class="button">
+      deal!
+    </button>
+    <button
+      @click="stand"
+      style="display: none"
+      id="standbutton"
+      class="button"
+    >
+      Stand.
+    </button>
+    <button
+      @click="reset"
+      style="display: none"
+      id="resetbutton"
+      class="button"
+    >
+      Reset Game.
+    </button>
   </main>
-  <button @click="startgame" id="startbutton" class="button">
-    Start Game!
-  </button>
-  <button @click="deal" style="display: none" id="dealbutton" class="button">
-    deal!
-  </button>
-  <button @click="stand" style="display: none" id="standbutton" class="button">
-    Stand.
-  </button>
-  <button @click="reset" style="display: none" id="resetbutton" class="button">
-    Reset Game.
-  </button>
 </template>
 
 <style>
@@ -295,6 +322,25 @@ function reset() {
   display: flex;
   gap: 10px;
   margin: 10px;
+}
+
+#flexing {
+  display: flex;
+  flex-direction: row;
+}
+
+#hands {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
 }
 
 body {
@@ -305,11 +351,11 @@ html {
   color: aliceblue;
 }
 img {
-  min-height: 350px;
-  max-height: 350px;
-  min-width: 250px;
-  max-width: 250px;
-  border-radius: 20px;
+  min-height: 175px;
+  max-height: 175px;
+  min-width: 125px;
+  max-width: 125px;
+  border-radius: 10px;
 }
 
 .button {
