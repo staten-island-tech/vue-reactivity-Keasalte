@@ -2,6 +2,7 @@
 import Card from "../components/Card.vue";
 import Value from "../components/HandV.vue";
 import { ref, setBlockTracking } from "vue";
+import { storeToRefs } from "pinia";
 
 function createCards() {
   const cards = ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king"];
@@ -25,6 +26,7 @@ function createCards() {
   }
   return r;
 }
+
 let deck = createCards();
 realvalueinator(deck);
 
@@ -156,7 +158,7 @@ async function startgame(event) {
   deak(playerhand, playervalue);
   await wait(700);
   deak(winner, dealervalue);
-  console.log(winner, playerhand)
+  console.log(winner, playerhand);
   document.querySelector("#dealbutton").style.display = "block";
   document.querySelector("#standbutton").style.display = "block";
   checkwinfail();
@@ -269,7 +271,7 @@ function reset() {
     </div>
     <div class="hand">
       <h2>Playerhand</h2>
-      <br>
+      <br />
       <Card :card="cardObject" v-for="cardObject in ph" />
       <Value :val="playervalue" />
     </div>
