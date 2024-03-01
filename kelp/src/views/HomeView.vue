@@ -56,7 +56,7 @@ function realvalueinator(dude) {
         s.realvalue = 10;
         break;
       case "ace":
-        s.realvalue = 11;
+        s.realvalue = 1;
         break;
       default:
         s.realvalue = s.value;
@@ -83,8 +83,8 @@ async function deak(hand, val) {
   val = addvalues(hand);
   if (val > 21) {
     hand.forEach((card) => {
-      if (card.value === "ace" && val > 21) {
-        card.realvalue = 1;
+      if (card.value === "ace" && val < 21) {
+        card.realvalue = 11;
         val = addvalues(hand);
       }
     });
@@ -283,7 +283,6 @@ let showcard = false;
             :i="index"
             :show="showcard"
           />
-          <Value :val="dealervalue" />
         </div>
         <div class="hand">
           <h2>Playerhand</h2>
@@ -328,6 +327,10 @@ let showcard = false;
 </template>
 
 <style>
+h1 {
+  background-color: #8f06c52c;
+}
+
 .hand {
   display: flex;
   gap: 10px;
@@ -337,6 +340,7 @@ let showcard = false;
 #flexing {
   display: flex;
   flex-direction: row;
+  background-color: #8f06c52c;
 }
 
 #hands {
@@ -361,10 +365,10 @@ html {
   color: aliceblue;
 }
 img {
-  min-height: 175px;
-  max-height: 175px;
-  min-width: 125px;
-  max-width: 125px;
+  min-height: 262.5px;
+  max-height: 262.5px;
+  min-width: 187.5px;
+  max-width: 187.5px;
   border-radius: 10px;
 }
 

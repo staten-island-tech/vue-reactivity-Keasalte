@@ -1,19 +1,12 @@
 <template>
-<div class = "value">
-<p>Value: {{value.val}}</p>
-</div>
-
-
+  <div class="value">
+    <p>Value: {{ value.val }}</p>
+  </div>
 </template>
 
 <script setup>
-const value = defineProps(['val'])
+const value = defineProps(["val", "who"]);
 console.log(value);
-
-
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>
