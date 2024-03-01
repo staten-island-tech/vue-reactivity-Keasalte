@@ -168,14 +168,15 @@ async function deal() {
   deak(playerhand, playervalue);
   checkwinfail(playervalue);
   await wait(700);
-  deak(winner, dealervalue);
-  riggedcheck(winner);
+  if (playervalue < 21) {
+    deak(winner, dealervalue);
+    riggedcheck(winner);
+  }
 }
 
 function stand() {
   deak(winner, dealervalue);
   riggedcheck(winner);
-  showcard = true;
 }
 
 function beattheodds() {
@@ -269,6 +270,7 @@ let showcard = false;
 </script>
 <template>
   <main>
+    <h1>Jack</h1>
     <div id="flexing">
       <img :src="'moonshine.jpg'" alt="" class="decker" />
       <div id="hands">
@@ -295,17 +297,25 @@ let showcard = false;
     <button @click="startgame" id="startbutton" class="button">
       Start Game!
     </button>
-    <button @click="deal" style="display: none" id="dealbutton" class="button">
-      deal!
-    </button>
-    <button
-      @click="stand"
-      style="display: none"
-      id="standbutton"
-      class="button"
-    >
-      Stand.
-    </button>
+    <div class="playtwo">
+      <button
+        @click="deal"
+        style="display: none"
+        id="dealbutton"
+        class="button"
+      >
+        deal!
+      </button>
+      <button
+        @click="stand"
+        style="display: none"
+        id="standbutton"
+        class="button"
+      >
+        Stand.
+      </button>
+    </div>
+
     <button
       @click="reset"
       style="display: none"
@@ -359,6 +369,7 @@ img {
 }
 
 .button {
+  margin: 10px;
   display: inline-block;
   outline: none;
   cursor: pointer;
@@ -386,5 +397,10 @@ img {
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
       0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
   }
+}
+
+.playtwo {
+  display: flex;
+  flex-direction: row;
 }
 </style>
